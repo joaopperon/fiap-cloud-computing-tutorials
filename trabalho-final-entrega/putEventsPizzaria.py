@@ -2,7 +2,7 @@ import boto3
 import random
 
 
-bucket_name = 'base-config-rm351725 '
+bucket_name = 'base-config-rm351725'
 folder_names = ['em-preparacao', 'pronto']
 users = ['rafael','pedro','teresa','natalia', 'eduardo']
 peeker = random.SystemRandom()

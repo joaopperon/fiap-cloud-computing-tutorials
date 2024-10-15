@@ -1,0 +1,44 @@
+service: trabalho-final-entrega
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  iam:
+    role: arn:aws:iam::301080176247:role/LabRole
+
+functions:
+  sqsHandler:
+    handler: handler.send_to_queue
+    events:
+      - s3:
+          bucket: base-config-rm351725
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: em-preparacao/
+      
+      - s3:
+          bucket: base-config-rm351725
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: pronto/
+
+  inserirNoDynamoEmPreparacao:
+    handler: handler.insert_into_dynamodb
+    events:
+      - sqs:
+          arn: arn:aws:sqs:us-east-1:301080176247:em-preparo-pizzaria
+          batchSize: 10
+          enabled: true
+
+  inserirNoDynamoPronto:
+    handler: handler.insert_into_dynamodb
+    events:
+      - sqs:
+          arn: arn:aws:sqs:us-east-1:301080176247:pronto-pizzaria
+          batchSize: 10
+          enabled: true
+
+
